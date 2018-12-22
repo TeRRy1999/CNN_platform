@@ -1,0 +1,97 @@
+#Headerbar{
+    height:50px;
+    padding :10px;
+    background-color: "white";
+    box-shadow:0px 2px 0px 0px #cccccc;
+}
+#Data_setting{
+    margin-top: 20px;
+    padding: 30px;
+    border: 1px solid WhiteSmoke;
+    box-shadow:0px 2px 1px 0px #cccccc;
+    overflow: hidden;
+}
+#Data_setting_comment{
+    padding :20px;
+    box-shadow:0px 2px 0px 0px #cccccc;
+    overflow: hidden;
+}
+#Box1{/*nn erea*/
+    height: calc(100vh - 108px);
+	border: 1px solid WhiteSmoke;
+	background-color: #F0F0F0;
+    overflow: hidden;
+}
+#Box3{/*Items*/
+	border: 1px solid Gainsboro;
+	background-color: Gainsboro;
+    height:calc(100vh - 108px);
+    padding:10px;
+    box-shadow:2px 2px 0px 0px #cccccc;
+    overflow: hidden;
+}
+#Status{
+	height:calc(100vh - 108px);
+	padding :20px;
+	border: 1px solid Gainsboro;
+	background-color: "white";
+    box-shadow:1px 2px 0px 0px #cccccc;
+    overflow: hidden;
+}
+#hpBar{
+    padding: 20px;
+    border: 1px solid WhiteSmoke;
+    box-shadow:0px 2px 1px 0px #cccccc;
+    overflow: hidden;
+}
+#dataset_inference_selector{
+    margin-top: 20px;
+    width: 400px;
+    padding: 30px;
+    border: 1px solid WhiteSmoke;
+    box-shadow:0px 2px 1px 0px #cccccc;
+    overflow: hidden;
+}
+#dataset_inference_show_result{
+    padding: 30px;
+}
+#test_py_uploader{
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid WhiteSmoke;
+    box-shadow:0px 2px 1px 0px #cccccc;
+    overflow: hidden;
+}
+#form_inference_selector{
+    margin-top: 20px;
+    height: 550px;
+    padding: 20px;
+    border: 1px solid WhiteSmoke;
+    box-shadow:0px 2px 1px 0px #cccccc;
+    overflow: hidden;
+}
+#form_inference_result{
+    margin-left: 20px;
+    height: 550px;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid WhiteSmoke;
+    box-shadow:0px 2px 1px 0px #cccccc;
+    overflow: hidden;
+}
+#form_inference_result_content{
+    padding: 20px;
+    border: 1px solid WhiteSmoke;
+    box-shadow:0px 2px 1px 0px #cccccc;
+    overflow: hidden;
+}
+#upLoadBar{
+    margin-top: 20px;
+    padding: 40px;
+    border: 1px solid WhiteSmoke;
+    box-shadow:0px 2px 1px 0px #cccccc;
+    overflow: hidden;
+}
+.img{
+	width: 100%;
+}
