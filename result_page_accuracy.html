@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script type="text/javascript">
+var dataPoints = [];
+var chart;
+var times = 0;
+
+var train_last = 0;
+var vali_last = 0;
+
+var dataPoints_loss = [];
+
+var times_loss = 0;
+var pro_a;
+var pro_a_va;
+
+if(do_canvas == 1){
+	loadData("python/train_accuracy.json","chartContainer");
+}
+
+function updateChart(route) {
+	$.getJSON(route, function(data) {
+		$.each(data, function(key, value) {
+			if(key > times){
+				//alert("enter: " + key);
+				dataPoints.push({
+				x: parseFloat(value[0]),
+				y: parseFloat(value[1])})
+				times = key;
+				
+				train_last = value[1];
+				pro_a = parseInt( (value[0]/total_dataset) * 100);
+			}
+			//alert(dataPoints[key].x + " " + dataPoints[key].y);
+		});
+
+		updateChart_loss("python/validation_accuracy.json");
+
+		chart.options.data[0].legendText = " train " + parseFloat(train_last.toFixed(4));
+		chart.options.data[1].legendText = " vali " + parseFloat(vali_last.toFixed(4)); 
+		chart.render();
+
+		
+		if(pro_a >= 100 && pro_a_va >=100){
+			do_canvas = 0;
+		//	alert("done!");
+			return;
+		}
+
+		setTimeout(function(){updateChart(route)}, 3000);
+	});
+}
+
+function loadData(route,cn) {
+	$.getJSON(route, function(data) {  
+		$.each(data, function(key, value){
+			dataPoints.push({x: value[0], y: parseFloat(value[1])});
+			times=key;
+			//alert(key + " " + dataPoints[key].x + " " + dataPoints[key].y);
+		});
+	});	
+	updateChart_loss("python/validation_accuracy.json");
+
+	chart = new CanvasJS.Chart(cn,{
+		zoomEnabled: true,
+  		zoomType: "xy",
+		title:{
+			text:"Accuracy"
+		},
+
+		axisY:{
+				title: "Accuracy",
+				valueFormatString: "0.000",
+			},
+
+		axisX:{
+
+			title: "Iteration (time)",
+		},
+
+		data: 
+		[
+			{
+				showInLegend: true,
+				name: "tain",
+				type: "line",
+				dataPoints : dataPoints
+			},
+			{
+				showInLegend: true,
+				name: "vali",
+				type: "line",
+				dataPoints : dataPoints_loss
+			}
+		]
+	});
+
+	chart.options.data[0].legendText = " train " + parseFloat(train_last.toFixed(4));
+	chart.options.data[1].legendText = " vali " + parseFloat(vali_last.toFixed(4)); 
+	chart.render();
+	updateChart(route);
+}
+
+function updateChart_loss(route) {
+	$.getJSON(route, function(data_loss) {
+		$.each(data_loss, function(key_loss, value_loss) {
+			if(key_loss >= times_loss){
+				//alert(key);
+				dataPoints_loss.push({
+				x: parseFloat(value_loss[0]),
+				y: parseFloat(value_loss[1])})
+				times_loss = key_loss;
+				
+				vali_last = value_loss[1];
+
+				pro_a_va = parseInt( (value_loss[0]/total_dataset) * 100);
+			};
+			//alert(dataPoints[key].x + " " + dataPoints[key].y);
+		});
+		//chart_loss.render();
+		//setTimeout(function(){updateChart_loss(route)}, 1000);
+	});
+}
+
+</script>
+
+</head>
+<body>
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+
+</body>
+</html>

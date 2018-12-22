@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script type="text/javascript">
+
+var dataPoints_p2 = [];
+var chart_p2;
+var times_p2 = 0;
+
+
+var train_last_p2 = 0;
+var vali_last_p2 = 0;
+
+
+var dataPoints_loss_p2 = [];
+
+var times_loss_p2 = 0;
+
+var loss_train;
+
+var pro;
+
+if(do_canvas == 1){
+	loadData_p2("python/train_loss.json","chartContainer_loss");
+}
+
+function updateChart_p2(route) {
+	$.getJSON(route, function(data) {
+		$.each(data, function(key, value) {
+			if(key > times_p2){
+				//alert("enter: " + key);
+				dataPoints_p2.push({
+				x: parseFloat(value[0]),
+				y: parseFloat(value[1])})
+				times_p2 = key;
+				
+				loss_train = value[1];
+
+				//parseInt( (times_p2/(epoch_frame*training_picNum_frame/batch_size_frame)) * 100)
+				//$("#progress").html(times_p2);
+				train_last_p2 = value[1];
+				pro = parseInt( (value[0]/total_dataset) * 100);
+				if(!isNaN(pro)){
+					$("#progress").html(pro);
+				}
+			}
+			//alert(dataPoints[key].x + " " + dataPoints[key].y);
+		});
+
+		updateChart_loss_p2("python/validation_loss.json");
+
+		chart_p2.options.data[0].legendText = " train " + parseFloat(train_last_p2.toFixed(4));
+		chart_p2.options.data[1].legendText = " vali " + parseFloat(vali_last_p2.toFixed(4)); 
+		chart_p2.render();
+
+
+		//pro_a = parseInt( (value[0]/total_dataset) * 100);
+		if(pro >= 100){
+			do_canvas = 0;
+			setTrainBtnAble();
+			//alert("done");
+			return;
+		}
+
+		setTimeout(function(){updateChart_p2(route)}, 2000);
+	});
+}
+
+function loadData_p2(route,cn) {
+	$.getJSON(route, function(data) {  
+
+		$.each(data, function(key, value){
+
+			dataPoints_p2.push({x: value[0], y: parseFloat(value[1])});
+			
+			times_p2 = key;
+			//alert(key + " " + dataPoints[key].x + " " + dataPoints[key].y);
+		});
+		
+	});
+
+	updateChart_loss_p2("python/validation_loss.json");
+
+	chart_p2 = new CanvasJS.Chart(cn,{
+			zoomEnabled: true,
+      		zoomType: "xy",
+			title:{
+				text:"loss"
+			},
+
+			axisY:{
+					title: "loss",
+					valueFormatString: "0.000",
+				},
+
+			axisX:{
+
+				title: "Iteration (time)",
+			},
+
+			data: 
+			[
+				{
+					showInLegend: true,
+					name: "tain",
+					type: "line",
+					dataPoints : dataPoints_p2
+				},
+				{
+					showInLegend: true,
+					name: "vali",
+					type: "line",
+					dataPoints : dataPoints_loss_p2
+				}
+			]
+
+
+		});
+
+		chart_p2.options.data[0].legendText = " train " + parseFloat(train_last_p2.toFixed(4));
+		chart_p2.options.data[1].legendText = " vali " + parseFloat(vali_last_p2.toFixed(4)); 
+		chart_p2.render();
+		updateChart_p2(route);
+}
+
+function updateChart_loss_p2(route) {
+	$.getJSON(route, function(data_loss_p2) {
+		$.each(data_loss_p2, function(key_loss_p2, value_loss_p2) {
+			if(key_loss_p2 >= times_loss_p2){
+				//alert(key);
+				dataPoints_loss_p2.push({
+				x: parseFloat(value_loss_p2[0]),
+				y: parseFloat(value_loss_p2[1])})
+				times_loss_p2 = key_loss_p2;
+				//alert(dataPoints[key].x + " " + dataPoints[key].y);
+				vali_last_p2 = value_loss_p2[1];
+			};
+		});
+		//chart_loss.render();
+		//setTimeout(function(){updateChart_loss_p2(route)}, 3000);
+	});
+}
+
+
+</script>
+
+</head>
+<body>
+<div id="chartContainer_loss" style="height: 300px; width: 100%;"></div>
+<div class="col-md-10"></div>
+<div class="col-md-2" style="margin-top: 20px">
+	<div class="container">
+		<span id="progress" style="font-size:150%;font-family: impact;">0</span>
+		<span style="font-size:150%;font-family: impact;">%</span>
+	</div>
+</div>
+</html>
